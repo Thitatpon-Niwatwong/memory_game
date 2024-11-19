@@ -10,6 +10,9 @@ let cardOne, cardTwo;
 const popup = document.querySelector(".popup");
 const popupMessage = document.querySelector(".popup-message");
 const popupBtn = document.querySelector(".popup-btn");
+const switchSetBtn = document.getElementById("switch-set-btn");
+const titleElement = document.querySelector(".title"); 
+let isSetOne = true;
 
 function flipCard({ target: clickedCard }) {
   if (!isPlaying) {
@@ -79,14 +82,37 @@ function shuffleCard() {
 }
 
 function showPopup(message) {
-  popupMessage.innerText = message; // ตั้งข้อความใน popup
-  popup.style.display = "flex"; // แสดง popup
-  disableDeck = true; // ปิดการคลิกการ์ดเมื่อเกมจบ
+  popupMessage.innerText = message;
+  popup.style.display = "flex"; 
+  disableDeck = true; 
+}
+
+function switchCardSet() {
+  isSetOne = !isSetOne;
+  const currentSet = isSetOne ? 1 : 2;
+
+  titleElement.innerText = isSetOne ? "เสียง กอไก่" : "เสียง งองู";
+
+  let arr = [1, 2, 3, 4, 5, 6, 1, 2, 3, 4, 5, 6];
+  arr.sort(() => (Math.random() > 0.5 ? 1 : -1));
+
+  cards.forEach((card, index) => {
+    card.classList.remove("flip");
+    let imgTag = card.querySelector(".back-view img");
+    setTimeout(() => {
+      imgTag.src = `Pictures/set-${currentSet}/img-${arr[index]}.png`;
+    }, 500);
+    card.addEventListener("click", flipCard);
+  });
+
+  flips = matchedCard = 0;
+  flipsTag.innerText = flips;
+  disableDeck = isPlaying = false;
 }
 
 popupBtn.addEventListener("click", () => {
   popup.style.display = "none";
-  shuffleCard(); // เริ่มเกมใหม่
+  shuffleCard(); 
 });
 
 shuffleCard();
@@ -96,3 +122,5 @@ refreshBtn.addEventListener("click", shuffleCard);
 cards.forEach((card) => {
   card.addEventListener("click", flipCard);
 });
+
+switchSetBtn.addEventListener("click", switchCardSet);
