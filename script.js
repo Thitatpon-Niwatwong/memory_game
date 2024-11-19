@@ -10,16 +10,19 @@ let matchedCard = 0;
 let disableDeck = false;
 let isPlaying = false;
 let cardOne, cardTwo, timer;
+const popup = document.querySelector(".popup");
+const popupMessage = document.querySelector(".popup-message");
+const popupBtn = document.querySelector(".popup-btn");
 
 function initTimer() {
   if (timeLeft <= 0) {
     clearInterval(timer);
     if (matchedCard === 6) {
-      alert("You Win");
+      showPopup("You Win!");
     } else {
       cards.forEach((card) => card.removeEventListener("click", flipCard));
       setTimeout(() => {
-        alert("You Lose");
+        showPopup("You Lose!");
       }, 500);
     }
     return;
@@ -49,49 +52,41 @@ function flipCard({ target: clickedCard }) {
     if (matchedCard === 6) {
       clearInterval(timer);
       setTimeout(() => {
-        alert("You Win");
+        showPopup("You Win!");
       }, 500);
     }
   }
   if (timeLeft <= 0 && matchedCard !== 6) {
     clearInterval(timer);
     setTimeout(() => {
-      alert("You Lose");
+      showPopup("You Lose!");
     }, 500);
   }
 }
 
-function flipCard({ target: clickedCard }) {
-  if (!isPlaying) {
-    isPlaying = true;
-    timer = setInterval(initTimer, 1000);
-  }
-  if (clickedCard !== cardOne && !disableDeck && timeLeft > 0) {
-    flips++;
-    flipsTag.innerText = flips;
-    clickedCard.classList.add("flip");
-    if (!cardOne) {
-      return (cardOne = clickedCard);
+function matchCards(img1, img2) {
+  if (img1 === img2) {
+    matchedCard++;
+    if (matchedCard == 6 && timeLeft > 0) {
+      return clearInterval(timer);
     }
-    cardTwo = clickedCard;
-    disableDeck = true;
-    let cardOneImg = cardOne.querySelector(".back-view img").src,
-      cardTwoImg = cardTwo.querySelector(".back-view img").src;
-    matchCards(cardOneImg, cardTwoImg);
+    cardOne.removeEventListener("click", flipCard);
+    cardTwo.removeEventListener("click", flipCard);
+    cardOne = cardTwo = "";
+    return (disableDeck = false);
+  }
 
-    if (matchedCard === 6) {
-      clearInterval(timer);
-      setTimeout(() => {
-        alert("You Win");
-      }, 500);
-    }
-  }
-  if (timeLeft <= 0 && matchedCard !== 6) {
-    clearInterval(timer);
-    setTimeout(() => {
-      alert("You Lose");
-    }, 500);
-  }
+  setTimeout(() => {
+    cardOne.classList.add("shake");
+    cardTwo.classList.add("shake");
+  }, 400);
+
+  setTimeout(() => {
+    cardOne.classList.remove("shake", "flip");
+    cardTwo.classList.remove("shake", "flip");
+    cardOne = cardTwo = "";
+    disableDeck = false;
+  }, 1200);
 }
 
 function shuffleCard() {
@@ -115,6 +110,17 @@ function shuffleCard() {
     card.addEventListener("click", flipCard);
   });
 }
+
+function showPopup(message) {
+  popupMessage.innerText = message; // ตั้งข้อความใน popup
+  popup.style.display = "flex"; // แสดง popup
+  disableDeck = true; // ปิดการคลิกการ์ดเมื่อเกมจบ
+}
+
+popupBtn.addEventListener("click", () => {
+  popup.style.display = "none";
+  shuffleCard(); // เริ่มเกมใหม่
+});
 
 shuffleCard();
 
