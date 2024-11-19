@@ -89,9 +89,18 @@ function showPopup(message) {
 
 function switchCardSet() {
   isSetOne = !isSetOne;
-  const currentSet = isSetOne ? 1 : 2;
-
+  const currentSet = isSetOne ? 1 : 2; 
+  
   titleElement.innerText = isSetOne ? "เสียง กอไก่" : "เสียง งองู";
+
+  const queIconSrc = isSetOne
+    ? "Pictures/set-1/que_icon.png" 
+    : "Pictures/set-2/que_icon.png"; 
+
+  const queIcons = document.querySelectorAll(".front-view img");
+  queIcons.forEach((icon) => {
+    icon.src = queIconSrc;
+  });
 
   let arr = [1, 2, 3, 4, 5, 6, 1, 2, 3, 4, 5, 6];
   arr.sort(() => (Math.random() > 0.5 ? 1 : -1));
@@ -100,7 +109,7 @@ function switchCardSet() {
     card.classList.remove("flip");
     let imgTag = card.querySelector(".back-view img");
     setTimeout(() => {
-      imgTag.src = `Pictures/set-${currentSet}/img-${arr[index]}.png`;
+      imgTag.src = `Pictures/set-${currentSet}/img-${arr[index]}.png`; 
     }, 500);
     card.addEventListener("click", flipCard);
   });
