@@ -137,14 +137,13 @@ p {
   border-radius: 7px;
   background: #2d9ee3;
   height: calc(100% / 4 - 30px);
-  justify-content: space-between;
+  justify-content: space-around;
   box-shadow: 0 3px 10px rgba(28, 25, 25, 0.845);
 }
 .details p {
   font-size: 18px;
   height: 17px;
   padding-right: 18px;
-  border-right: 1px solid #ee2c2c;
 }
 .details p span {
   margin-left: 8px;

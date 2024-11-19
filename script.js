@@ -1,42 +1,21 @@
 const cards = document.querySelectorAll(".card"),
-  timeTag = document.querySelector(".time b"),
   flipsTag = document.querySelector(".flips b"),
   refreshBtn = document.querySelector(".details button");
 
-let maxTime = 30;
-let timeLeft = maxTime;
 let flips = 0;
 let matchedCard = 0;
 let disableDeck = false;
 let isPlaying = false;
-let cardOne, cardTwo, timer;
+let cardOne, cardTwo;
 const popup = document.querySelector(".popup");
 const popupMessage = document.querySelector(".popup-message");
 const popupBtn = document.querySelector(".popup-btn");
 
-function initTimer() {
-  if (timeLeft <= 0) {
-    clearInterval(timer);
-    if (matchedCard === 6) {
-      showPopup("You Win!");
-    } else {
-      cards.forEach((card) => card.removeEventListener("click", flipCard));
-      setTimeout(() => {
-        showPopup("You Lose!");
-      }, 500);
-    }
-    return;
-  }
-  timeLeft--;
-  timeTag.innerText = timeLeft;
-}
-
 function flipCard({ target: clickedCard }) {
   if (!isPlaying) {
     isPlaying = true;
-    timer = setInterval(initTimer, 1000);
   }
-  if (clickedCard !== cardOne && !disableDeck && timeLeft > 0) {
+  if (clickedCard !== cardOne && !disableDeck) {
     flips++;
     flipsTag.innerText = flips;
     clickedCard.classList.add("flip");
@@ -50,30 +29,21 @@ function flipCard({ target: clickedCard }) {
     matchCards(cardOneImg, cardTwoImg);
 
     if (matchedCard === 6) {
-      clearInterval(timer);
       setTimeout(() => {
         showPopup("You Win!");
       }, 500);
     }
-  }
-  if (timeLeft <= 0 && matchedCard !== 6) {
-    clearInterval(timer);
-    setTimeout(() => {
-      showPopup("You Lose!");
-    }, 500);
   }
 }
 
 function matchCards(img1, img2) {
   if (img1 === img2) {
     matchedCard++;
-    if (matchedCard == 6 && timeLeft > 0) {
-      return clearInterval(timer);
-    }
     cardOne.removeEventListener("click", flipCard);
     cardTwo.removeEventListener("click", flipCard);
     cardOne = cardTwo = "";
-    return (disableDeck = false);
+    disableDeck = false;
+    return;
   }
 
   setTimeout(() => {
@@ -90,11 +60,8 @@ function matchCards(img1, img2) {
 }
 
 function shuffleCard() {
-  timeLeft = maxTime;
   flips = matchedCard = 0;
   cardOne = cardTwo = "";
-  clearInterval(timer);
-  timeTag.innerText = timeLeft;
   flipsTag.innerText = flips;
   disableDeck = isPlaying = false;
 
